@@ -80,6 +80,6 @@ data = {
     'SSL':ssls,
 }
 df = pd.DataFrame(data)
-df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/1-1.csv",index=False)
+df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/ex1_web-scraping/1-1.csv",index=False)
 
 print('終了')
