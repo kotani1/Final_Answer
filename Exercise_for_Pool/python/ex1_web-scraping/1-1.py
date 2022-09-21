@@ -1,16 +1,12 @@
-import csv
 import requests
 from bs4 import BeautifulSoup
 import time
 import re
 import pandas as pd
 
-def check_none(word):
-  if word == None:
-    return ''
-  else:
-    return word.text
-
+headers = {
+'User-Agent': 'ootatarou1@gmail.com'
+}
 
 pattern = '''(...??[都道府県])((?:旭川|伊達|石狩|盛岡|奥州|田村|南相馬|那須塩原|東村山|武蔵村山|羽村|十日町|上越|
 富山|野々市|大町|蒲郡|四日市|姫路|大和郡山|廿日市|下松|岩国|田川|大村|宮古|富良野|別府|佐伯|黒部|小諸|塩尻|玉野|
@@ -20,7 +16,7 @@ num =0
 page =10
 
 names =[]
-phone_numbers =[]
+numbers =[]
 emails =[]
 prefectures =[]
 municipalities =[]
@@ -31,27 +27,26 @@ ssls =[]
 
 while num <50:
   url = 'https://r.gnavi.co.jp/area/jp/continental/rs/?p='+str(page)
-  response = requests.get(url)
+  response = requests.get(url,headers=headers)
   bs = BeautifulSoup(response.text, 'html.parser')
   a_tags = bs.find_all('a', class_ = 'style_titleLink__oiHVJ')
   for i in range(0,len(a_tags)):
     if num==50:
       break
-    r = requests.get(a_tags[i].get("href"))
+    r = requests.get(a_tags[i].get("href"),headers=headers)
     b = BeautifulSoup(r.content, 'html.parser')
     table = b.find('table', class_ = 'basic-table')
-    name = check_none(table.find(id="info-name"))
-    phone_number = check_none(table.find(class_="number"))
-    email = (table.find(string='お店に直接メールする'))
-    if email  == None:
+    name = table.find(id="info-name").text
+    number = table.find(class_="number").text
+    try:
+      email = table.find(string='お店に直接メールする').parent.get("href")[7:]
+    except:
       email =''
-    else:
-      print(email)
-      email = email.parent.get("href")[7:]
-
-    region = check_none(table.find(class_="region"))
-    locality = check_none(table.find(class_="locality"))
-
+    try:
+      locality = table.find(class_="locality").text
+    except:
+      locality =''
+    region = table.find(class_="region").text
     result = re.match(pattern, region)
     if result: #正規表現パターンにマッチした場合
       prefecture = result.group(1) #都道府県
@@ -61,7 +56,7 @@ while num <50:
     url = ''
     ssl = ''
     names += [name]
-    phone_numbers += [phone_number]
+    numbers += [number]
     emails += [email]
     prefectures += [prefecture]
     municipalities += [municipality]
@@ -69,20 +64,13 @@ while num <50:
     localities += [locality]
     urls += [url]
     ssls += [ssl]
-    print(num)
-    # gurunabi_list.append([name,phone_number,prefecture,municipalities,
-    # street_number,locality])
     num+=1
     time.sleep(5)
   page+=1
-    # if i==5:
-    #   break
-
-
 
 data = {
     '店舗名': names,
-    '電話番号': phone_numbers,
+    '電話番号': numbers,
     'メールアドレス': emails,
     '都道府県':prefectures,
     '市区町村':municipalities,
@@ -90,27 +78,8 @@ data = {
     '建物名':localities,
     'URL':urls,
     'SSL':ssls,
-
 }
 df = pd.DataFrame(data)
-df.to_csv("C:/Users/81802/FINAL_ANSWER/Exercise_for_Pool/python/sample.csv",index=False)
+df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/1-1.csv",index=False)
 
 print('終了')
-
-
-
-
-#
-
-# else:
-#   print('通信失敗')
-
-
-
-
-
-# with open("C:/Users/81802/Exercise_for_Pool/python/sample.csv", "a",newline="") as f:
-#     writer = csv.writer(f)
-#     for i in range(0,len(gurunabi_list)):
-#       print(gurunabi_list[i])
-#       writer.writerow(gurunabi_list[i])
