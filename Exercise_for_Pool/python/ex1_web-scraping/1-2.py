@@ -89,6 +89,6 @@ data = {
     'SSL':ssls,
 }
 df = pd.DataFrame(data)
-df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/sample2.csv")
+df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/1-2.csv")
 
 print('終了')
