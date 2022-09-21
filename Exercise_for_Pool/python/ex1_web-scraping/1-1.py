@@ -27,15 +27,15 @@ ssls =[]
 
 while num <50:
   url = 'https://r.gnavi.co.jp/area/jp/continental/rs/?p='+str(page)
-  response = requests.get(url,headers=headers)
-  bs = BeautifulSoup(response.text, 'html.parser')
-  a_tags = bs.find_all('a', class_ = 'style_titleLink__oiHVJ')
+  r = requests.get(url,headers=headers)
+  b = BeautifulSoup(r.text, 'html.parser')
+  a_tags = b.find_all('a', class_ = 'style_titleLink__oiHVJ')
   for i in range(0,len(a_tags)):
     if num==50:
       break
-    r = requests.get(a_tags[i].get("href"),headers=headers)
-    b = BeautifulSoup(r.content, 'html.parser')
-    table = b.find('table', class_ = 'basic-table')
+    r2 = requests.get(a_tags[i].get("href"),headers=headers)
+    b2 = BeautifulSoup(r2.content, 'html.parser')
+    table = b2.find('table', class_ = 'basic-table')
     name = table.find(id="info-name").text
     number = table.find(class_="number").text
     try:
