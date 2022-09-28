@@ -4,7 +4,21 @@ import pandas as pd
 from selenium import webdriver
 driver = webdriver.Chrome(executable_path="C:/Users/81802/Downloads/chromedriver_win32/chromedriver.exe")
 options = webdriver.ChromeOptions()
-options.add_argument('--user-agent=ootatarou1@gmail.com')
+user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
+options.add_argument('--user-agent='+user_agent)
+
+def bunkatu(region):
+  result = re.match(pattern, region)
+  if result: #正規表現パターンにマッチした場合
+      prefecture = result.group(1) #都道府県
+      municipality = result.group(2)#市区町村
+      street_number = result.group(3) #その他
+  for i in range(0,len(street_number)):
+    if street_number[i] in ['1','2','3','4','5','6','7','8','9','0']:
+      municipality  += street_number[0:i]
+      street_number = street_number[i:]
+      break
+  return [prefecture,municipality,street_number]
 
 num =0
 names =[]
@@ -29,21 +43,21 @@ while num <50:
   for i in range(0,len(a_tags)):
     if num ==50:
       break
+    time.sleep(5)
+    #新しいタブで開く
     driver.execute_script("window.open('"+ a_tags[i].get_attribute("href")+"');")
     driver.switch_to.window(driver.window_handles[1])
     name = driver.find_element_by_id("info-name").text
     number = driver.find_element_by_class_name("number").text
+    region = driver.find_element_by_class_name("region").text
+    adress = bunkatu(region)
+
     email = driver.find_elements_by_link_text('お店に直接メールする')
     if email:
       email = email[0].get_attribute("href")[7:]
     else:
       email =''
-    region = driver.find_element_by_class_name("region").text
-    result = re.match(pattern, region)
-    if result: #正規表現パターンにマッチした場合
-      prefecture = result.group(1) #都道府県
-      municipality = result.group(2)#市区町村
-      street_number = result.group(3) #その他
+
 
     locality = driver.find_elements_by_class_name("locality")
     if locality:
@@ -51,20 +65,21 @@ while num <50:
     else:
       locality = ''
 
-    url = driver.find_elements_by_class_name("sv-of")
+    url = driver.find_elements_by_link_text('お店のホームページ')
+    ssl = 'False'
     if url:
       url = url[0].get_attribute("href")
       if url[4:5] == 's':
         ssl = 'True'
     else:
       url = ''
-      ssl = 'False'
+
     names += [name]
     numbers += [number]
     emails += [email]
-    prefectures += [prefecture]
-    municipalities += [municipality]
-    street_numbers += [street_number]
+    prefectures += [adress[0]]
+    municipalities += [adress[1]]
+    street_numbers += [adress[2]]
     localities += [locality]
     urls += [url]
     ssls += [ssl]
@@ -72,9 +87,9 @@ while num <50:
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
     num+=1
-    time.sleep(5)
   driver.find_element_by_class_name('style_nextIcon__M_Me_').click()
   time.sleep(1)
+
 driver.close()
 driver.quit()
 data = {
@@ -89,6 +104,6 @@ data = {
     'SSL':ssls,
 }
 df = pd.DataFrame(data)
-df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/ex1_web-scraping/1-2.csv",index=False)
+df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/ex1_web-scraping/1-2.csv",index=False,encoding="Shift-JIS")
 
 print('終了')

@@ -1,7 +1,23 @@
 @charset "utf-8";
 
-/* 
-.example {
-    color: red;
-} 
-*/
+body{
+    background-color: rgb(249, 242, 218);
+    margin: 0;
+}
+.center {
+    margin: 10px 160px 0px 140px;
+    text-align: center;
+}
+.left {
+    text-align: left;
+}
+.flex {
+    display: flex;
+}
+video{
+    width: 420px;
+    height: 250px;
+}
+.space-between {
+    justify-content: space-between
+}
