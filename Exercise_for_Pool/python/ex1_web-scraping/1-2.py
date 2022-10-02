@@ -1,5 +1,6 @@
 import re
 import time
+from xmlrpc.client import boolean
 import pandas as pd
 from selenium import webdriver
 driver = webdriver.Chrome(executable_path="C:/Users/81802/Downloads/chromedriver_win32/chromedriver.exe")
@@ -20,7 +21,7 @@ def bunkatu(region):
       break
   return [prefecture,municipality,street_number]
 
-num =0
+boolean1 = True
 names =[]
 numbers =[]
 emails =[]
@@ -38,10 +39,11 @@ pattern = '''(...??[都道府県])((?:旭川|伊達|石狩|盛岡|奥州|田村|
 
 driver.get("https://r.gnavi.co.jp/area/jp/japanese/rs/")
 
-while num <50:
+while boolean1:
   a_tags = driver.find_elements_by_class_name('style_titleLink__oiHVJ')
   for i in range(0,len(a_tags)):
-    if num ==50:
+    if len(names) ==50:
+      boolean1 = False
       break
     time.sleep(5)
     #新しいタブで開く
@@ -86,7 +88,6 @@ while num <50:
 
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
-    num+=1
   driver.find_element_by_class_name('style_nextIcon__M_Me_').click()
   time.sleep(1)
 
