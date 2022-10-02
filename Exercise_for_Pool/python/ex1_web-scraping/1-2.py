@@ -42,7 +42,7 @@ driver.get("https://r.gnavi.co.jp/area/jp/japanese/rs/")
 while boolean1:
   a_tags = driver.find_elements_by_class_name('style_titleLink__oiHVJ')
   for i in range(0,len(a_tags)):
-    if len(names) ==50:
+    if len(names) == 50:
       boolean1 = False
       break
     time.sleep(5)
@@ -105,6 +105,5 @@ data = {
     'SSL':ssls,
 }
 df = pd.DataFrame(data)
-df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/ex1_web-scraping/1-2.csv",index=False,encoding="Shift-JIS")
-
+df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/ex1_web-scraping/1-2.csv",index=False,encoding="cp932")
 print('終了')
