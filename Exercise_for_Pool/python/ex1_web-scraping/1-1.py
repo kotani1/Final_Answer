@@ -96,7 +96,7 @@ data = {
     'SSL':ssls,
 }
 df = pd.DataFrame(data)
-df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/ex1_web-scraping/1-1.csv",index=False,encoding="Shift-JIS", errors='ignore'
+df.to_csv("C:/FINAL_ANSWER/Exercise_for_Pool/python/ex1_web-scraping/1-1.csv",index=False,encoding="cp932", errors='ignore'
 )
 
 print('終了')
